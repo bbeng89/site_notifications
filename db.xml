@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+	<table name="SiteNotifications">
+	    <field name="notificationID" type="I">
+	    	<key />
+	    	<unsigned />
+	    	<autoincrement />
+	    </field>
+	    <field name="dateAdded" type="T" />
+	    <field name="expires" type="T" />
+	    <field name="notificationText" type="X2" />
+	    <field name="layout" type="C" size="255" />
+	    <field name="notificationType" type="C" size="255" />
+	    <field name="delay" type="I" />
+	    <field name="modal" type="I1" />
+	    <field name="closeWith" type="C" size="20" />
+	</table>
+</schema>
