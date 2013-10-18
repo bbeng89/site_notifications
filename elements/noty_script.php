@@ -11,14 +11,14 @@ $counter = 1;
 
 	<?php foreach($optionObjs as $options): ?>
 		var options = $.parseJSON('<?php echo $json->encode($options);?>');
-		options.callback = {};
-		options.callback.afterClose = function(){
-			var nid = <?php echo $options->notificationID;?>;
-			cookie.push(nid);
-			//TODO: calculate expiration based on when the notification is set to expire
-			$.cookie('dismissed_site_notifications', JSON.stringify(cookie), { path: '/' });
+		options.callback = {
+			afterClose: function(){
+				var nid = <?php echo $options->notificationID;?>;
+				cookie.push(nid);
+				//TODO: calculate expiration based on when the notification is set to expire
+				$.cookie('dismissed_site_notifications', JSON.stringify(cookie), { path: '/', expires: <?php echo $expirations[$options->notificationID];?> });
+			}
 		}
-
 		var noty<?php echo $counter;?> = noty(options);
 	<?php endforeach; ?>
 </script>

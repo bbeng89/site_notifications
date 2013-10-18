@@ -14,6 +14,17 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 		<legend><?php echo t('Notification Details'); ?></legend>
 		
 		<div class="control-group">
+			<div class="control-label">
+				<?php echo t("Enabled"); ?>
+			</div>
+			<div class="controls">
+				<label class="checkbox">
+					<?php echo $fh->checkbox('enabled', 'enabled', $enabled); ?>
+					<span class="help-inline"><?php echo t('Turns this notification on or off. Still obeys expiration date.') ?></span>
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label" for="notificationText"><?php echo t("Notification Text"); ?></label>
 			<div class="controls">
 				<?php echo $fh->textarea("notificationText", $notificationText, array("class" => "span8", "rows" => "2")); ?>
@@ -45,7 +56,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 			<div class="controls">
 				<label class="checkbox">
 					<?php echo $fh->checkbox('modal', 'modal', $modal); ?>
-					<span class="help-inline"><?php echo t('Display the notification in a modal') ?></span>
+					<span class="help-inline"><?php echo t('Display the notification in a modal (forces user to acknowledge)') ?></span>
 				</label>
 			</div>
 		</div>
@@ -61,6 +72,14 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 				<?php echo $dth->datetime('expires', $expires, false, true); ?>
 			</div>
 		</div>
+		<div class="control-group">
+			<label class="control-label"><?php echo t("Show To"); ?></label>
+			<div class="controls">
+				<?php foreach($groups as $gid => $name): ?>
+					<p><?php echo $fh->checkbox('groups[]', $gid, in_array($gid, $selectedGroups), null) . ' ' . $name; ?></p>
+				<?php endforeach;?>
+			</div>
+		</div>
 		<?php echo $fh->hidden('notificationID', $notificationID); ?>
 		
 	</div>
@@ -70,3 +89,29 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 	</div>
 </form>
 <?php echo $dbh->getDashboardPaneFooterWrapper(false);?>
+
+<script>
+	$(document).ready(function(){
+		//initial checks
+		checkCheckboxes();
+		//event handlers
+		$('#groups_A').change(checkCheckboxes);
+	});
+		//if "All Groups" is checked hide all other group CBs - otherwise show all others
+	function checkCheckboxes(){
+		var checkboxes = $('input[type="checkbox"][name^="groups"][id!=groups_A]');
+		var allGroupsCb = $('#groups_A');
+
+		if(allGroupsCb.is(':checked')){
+			checkboxes.each(function(){
+				$(this).removeAttr('checked');
+				$(this).attr('disabled', 'disabled');
+			});
+		}
+		else{
+			checkboxes.each(function(){
+				$(this).removeAttr('disabled');
+			});
+		}
+	}
+</script>

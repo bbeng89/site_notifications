@@ -6,6 +6,7 @@
 	    	<unsigned />
 	    	<autoincrement />
 	    </field>
+	    <field name="enabled" type="I1" />
 	    <field name="dateAdded" type="T" />
 	    <field name="expires" type="T" />
 	    <field name="notificationText" type="X2" />
@@ -14,5 +15,6 @@
 	    <field name="delay" type="I" />
 	    <field name="modal" type="I1" />
 	    <field name="closeWith" type="C" size="20" />
+	    <field name="groups" type="X2" />
 	</table>
 </schema>

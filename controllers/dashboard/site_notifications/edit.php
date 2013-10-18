@@ -7,6 +7,7 @@ class DashboardSiteNotificationsEditController extends Controller {
 		//edit
 		if($this->get('nid')){
 			$db = Loader::db();
+			$json = Loader::helper('json');
 			$n = $db->GetRow('SELECT * FROM SiteNotifications WHERE notificationID=?', array($this->get('nid')));
 			$this->set('notificationText', $n['notificationText']);
 			$this->set('layout', $n['layout']);
@@ -16,12 +17,17 @@ class DashboardSiteNotificationsEditController extends Controller {
 			$this->set('closeWith', $n['closeWith']);
 			$this->set('expires', $n['expires']);
 			$this->set('notificationID', $n['notificationID']);
+			$this->set('selectedGroups', $json->decode($n['groups']));
+			$this->set('enabled', $n['enabled']);
 		}
 		//insert
 		else{
 			$this->set('modal', false);
 			$this->set('delay', 0);
+			$this->set('selectedGroups', array('A'));
+			$this->set('enabled', false);
 		}
+		$this->set('groups', $this->getGroups());
 	}
 
 	public function save(){
@@ -41,15 +47,18 @@ class DashboardSiteNotificationsEditController extends Controller {
 
 	private function add($vars){
 		$db = Loader::db();
-		$db->Execute('INSERT INTO SiteNotifications (dateAdded, expires, notificationText, layout, notificationType, delay, modal, closeWith) VALUES(NOW(), ?, ?, ?, ?, ?, ?, ?)', $vars);
+		$db->Execute('INSERT INTO SiteNotifications (dateAdded, enabled, expires, notificationText, layout, notificationType, delay, modal, closeWith, groups) VALUES(NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)', $vars);
 	}
 
 	private function update($vars){
 		$db = Loader::db();
-		$db->Execute('UPDATE SiteNotifications SET expires=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=? WHERE notificationID=?', $vars);
+		$db->Execute('UPDATE SiteNotifications SET enabled=?, expires=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=?, groups=? WHERE notificationID=?', $vars);
 	}
 
 	private function getPostVars(){
+		$json = Loader::helper('json');
+		$tmpEnabled = $this->post('enabled');
+		$enabled = !empty($tmpEnabled) ? 1 : 0;
 		$notificationText = $this->post('notificationText');
 		$layout = $this->post('layout');
 		$notificationType = $this->post('notificationType');
@@ -64,8 +73,20 @@ class DashboardSiteNotificationsEditController extends Controller {
 		$expiresAMPM = $this->post('expires_a');
 		$expires = $expiresDate . ' ' . $expiresHour . ':' . $expiresMin . ' ' . $expiresAMPM;
 		$expiresDt = DateTime::createFromFormat('n/j/Y h:i a', $expires);
+		$groups = $json->encode($this->post('groups'));
 		
-		return array($expiresDt->format('Y-m-d H:i:s'), $notificationText, $layout, $notificationType, $delay, $modal, $closeWith);
+		return array($enabled, $expiresDt->format('Y-m-d H:i:s'), $notificationText, $layout, $notificationType, $delay, $modal, $closeWith, $groups);
 	}
-	
+
+	//helper function - returns array of user groups
+	private function getGroups(){
+		Loader::model('search/group');
+		$gs = new GroupSearch();
+		$groupArr = $gs->get(9999, 0);
+		$groups = array("A" => t("All Groups"));
+		foreach($groupArr as $ga){
+			$groups[$ga['gID']] = $ga['gName'];
+		}
+		return $groups;
+	}
 }
