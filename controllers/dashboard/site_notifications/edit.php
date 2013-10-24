@@ -57,6 +57,7 @@ class DashboardSiteNotificationsEditController extends Controller {
 
 	private function getPostVars(){
 		$json = Loader::helper('json');
+		$dth = Loader::helper('form/date_time');
 		$tmpEnabled = $this->post('enabled');
 		$enabled = !empty($tmpEnabled) ? 1 : 0;
 		$notificationText = $this->post('notificationText');
@@ -66,16 +67,10 @@ class DashboardSiteNotificationsEditController extends Controller {
 		$tmp = $this->post('modal');
 		$modal = !empty($tmp) ? 1 : 0;
 		$closeWith = $this->post('closeWith');
-
-		$expiresDate = $this->post('expires_dt');
-		$expiresHour = $this->post('expires_h');
-		$expiresMin = $this->post('expires_m');
-		$expiresAMPM = $this->post('expires_a');
-		$expires = $expiresDate . ' ' . $expiresHour . ':' . $expiresMin . ' ' . $expiresAMPM;
-		$expiresDt = DateTime::createFromFormat('n/j/Y h:i a', $expires);
+		$expires = $dth->translate('expires');
 		$groups = $json->encode($this->post('groups'));
 		
-		return array($enabled, $expiresDt->format('Y-m-d H:i:s'), $notificationText, $layout, $notificationType, $delay, $modal, $closeWith, $groups);
+		return array($enabled, $expires, $notificationText, $layout, $notificationType, $delay, $modal, $closeWith, $groups);
 	}
 
 	//helper function - returns array of user groups
