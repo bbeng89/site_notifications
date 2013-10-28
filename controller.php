@@ -1,6 +1,12 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied"));
 
+/**
+ * @author 		Blake Bengtson (bbeng89)
+ * @copyright  	Copyright 2013 Blake Bengtson
+ * @license     concrete5.org marketplace license
+ */
+
 class SiteNotificationsPackage extends Package {
 
 	protected $pkgHandle = 'site_notifications';
@@ -8,7 +14,7 @@ class SiteNotificationsPackage extends Package {
 	protected $pkgVersion = '0.9.0';
 
 	public function getPackageDescription(){
-		return t('Allows you to add notification alerts to your website');
+		return t('Add notification alerts to your website.');
 	}
 
 	public function getPackageName(){

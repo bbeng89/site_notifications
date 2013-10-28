@@ -1,5 +1,12 @@
 <?php 
 defined('C5_EXECUTE') or die(_("Access Denied"));
+
+/**
+ * @author 		Blake Bengtson (bbeng89)
+ * @copyright  	Copyright 2013 Blake Bengtson
+ * @license     concrete5.org marketplace license
+ */
+ 
 $dbh = Loader::helper('concrete/dashboard');
 $nh = Loader::helper('navigation');
 $fh = Loader::helper('form');
@@ -12,7 +19,6 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 <form class="form-horizontal" action="<?php echo $this->action('save'); ?>" method="POST">
 	<div class="ccm-pane-body">
 		<legend><?php echo t('Notification Details'); ?></legend>
-		
 		<div class="control-group">
 			<div class="control-label">
 				<?php echo t("Enabled"); ?>
@@ -70,6 +76,12 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 			<label class="control-label" for="expires"><?php echo t("Expires"); ?></label>
 			<div class="controls">
 				<?php echo $dth->datetime('expires', $expires, false, true); ?>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="expires"><?php echo t("Expires Timezone"); ?></label>
+			<div class="controls">
+				<?php echo $fh->select('expiresTZ', $timezones, $expiresTZ, array("class" => "span4")); ?>
 			</div>
 		</div>
 		<div class="control-group">

@@ -1,5 +1,12 @@
 <?php 
 defined('C5_EXECUTE') or die(_("Access Denied"));
+
+/**
+ * @author 		Blake Bengtson (bbeng89)
+ * @copyright  	Copyright 2013 Blake Bengtson
+ * @license     concrete5.org marketplace license
+ */
+ 
 $dbh = Loader::helper('concrete/dashboard');
 $noty = Loader::helper('noty', 'site_notifications');
 $th = Loader::helper('text');
@@ -35,7 +42,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 					<td><?php echo $th->shorten($n['notificationText'], 50); ?></td>
 					<td><?php echo $layouts[$n['layout']]; ?></td>
 					<td><?php echo $types[$n['notificationType']]; ?></td>
-					<td><?php echo $n['enabled'] ? 'Yes' : 'No'; ?></td>
+					<td><?php echo $n['enabled'] ? t('Yes') : t('No'); ?></td>
 					<td><?php echo date('n/j/Y g:i a', strtotime($n['expires'])); ?></td>
 					<td><a href="<?php echo $this->url('/dashboard/site_notifications/edit?nid='. $n['notificationID']); ?>" class="btn"><?php echo t('Edit'); ?></td>
 					<td>
@@ -49,7 +56,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 		</tbody>
 	</table>
 	<div class="clearfix">
-		<p class="pull-left"><?php echo count($notifications) . ' ' . (count($notifications) == 1 ? 'Notification' : 'Notifications'); ?></p>
+		<p class="pull-left"><?php echo count($notifications) . ' ' . (count($notifications) == 1 ? t('Notification') : t('Notifications')); ?></p>
 		<a href="<?php echo $this->url('/dashboard/site_notifications/edit'); ?>" class="pull-right btn btn-primary"><?php echo t('Add New Notification'); ?></a>
 	</div>
 </div>

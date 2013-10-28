@@ -1,4 +1,12 @@
-<?php defined('C5_EXECUTE') or die(_("Access Denied"));
+<?php 
+defined('C5_EXECUTE') or die(_("Access Denied"));
+
+/**
+ * @author 		Blake Bengtson (bbeng89)
+ * @copyright  	Copyright 2013 Blake Bengtson
+ * @license     concrete5.org marketplace license
+ */
+
 $json = Loader::helper('json');
 $counter = 1;
 ?>
@@ -15,7 +23,6 @@ $counter = 1;
 			afterClose: function(){
 				var nid = <?php echo $options->notificationID;?>;
 				cookie.push(nid);
-				//TODO: calculate expiration based on when the notification is set to expire
 				$.cookie('dismissed_site_notifications', JSON.stringify(cookie), { path: '/', expires: <?php echo $expirations[$options->notificationID];?> });
 			}
 		}

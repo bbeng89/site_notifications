@@ -1,8 +1,16 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied"));
 
+/**
+ * @author 		Blake Bengtson (bbeng89)
+ * @copyright  	Copyright 2013 Blake Bengtson
+ * @license     concrete5.org marketplace license
+ */
+
 class NotyHelper {
 
+	//Returns an array of possible noty layouts. Layouts are the position of the alert on the screen
+	//The key is the text the noty javascript expects, and the value is the human-readable version
 	public function getLayouts(){
 		return array(
 			'top' => t('Top'),
@@ -19,6 +27,8 @@ class NotyHelper {
 		);
 	}
 
+	//Returns an array of possible noty notification types. Types basically indicate the color of the notification.
+	//The key is the text the noty javascript expects, and the value is the human readable form.
 	public function getTypes(){
 		return array(
 			'alert' => t('Alert'),
@@ -30,6 +40,7 @@ class NotyHelper {
 		);
 	}
 
+	//Returns an array of options for closeWith. This is how the notification can be dismissed
 	public function getCloseWithOptions(){
 		return array(
 			'click' => t('Click'),

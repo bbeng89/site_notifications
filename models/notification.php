@@ -1,11 +1,16 @@
 <?php
 defined('C5_EXECUTE') or die(_("Access Denied"));
 
+/**
+ * @author 		Blake Bengtson (bbeng89)
+ * @copyright  	Copyright 2013 Blake Bengtson
+ * @license     concrete5.org marketplace license
+ */
+
 class Notification {
 
 	public function addNotifications($v){
 		$db = Loader::db();
-		//$c = $v->getCollectionObject();
 		$notifications = $db->GetAll("SELECT * FROM SiteNotifications");
 
 		if(count($notifications) != 0){
@@ -23,6 +28,7 @@ class Notification {
 			//create options objects for each notification
 			foreach($notifications as $n){
 
+				//if this notification doesn't meet the criteria to be visible, skip it
 				if(!Notification::isVisible($n, $u, $dismissed)){
 					continue;
 				}
@@ -39,10 +45,12 @@ class Notification {
 				$settings->closeWith = array($n['closeWith']);
 				$nOptions[] = $settings;
 
+				//each layout has a separate js file - add unique layouts to load later
 				if(!in_array($n['layout'], $nLayouts)){
 					$nLayouts[] = $n['layout'];
 				}
 
+				//add the expiration date for this notification
 				$expirations[$n['notificationID']] = Notification::calculateCookieExpiration($n);
 			}
 
@@ -54,6 +62,7 @@ class Notification {
 			//load the theme js
 			$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/themes/default.js', 'site_notifications'));
 
+			//get the content of the noty_script element
 			ob_start();
 			Loader::packageElement('noty_script', 'site_notifications', array('optionObjs' => $nOptions, 'expirations' => $expirations));
 			$script = ob_get_contents();
@@ -78,14 +87,14 @@ class Notification {
 		if(in_array($n['notificationID'], $dismissed)){
 			return false;
 		}
-		$dh = Loader::helper('date');
 		//check if the notification has expired - if it has immediately return false
-		$expires = new DateTime($n['expires']);
-		$now = new DateTime();
+		$tz = new DateTimeZone($n['expiresTZ']);
+		$expires = new DateTime($n['expires'], $tz);
+		$now = new DateTime('now', $tz);
 		if($expires <= $now){
 			return false;
 		}
-		//if it enabled, active, and hasn't been dismissed, check if it applies to this user
+		//if its enabled, active, and hasn't been dismissed, check if it applies to this user
 		$groups = Loader::helper('json')->decode($n['groups']);
 		$inGroup = false;
 		if(in_array('A', $groups)){
@@ -113,6 +122,7 @@ class Notification {
 		return $inGroup;
 	}
 
+	//creates an expiraton date for cookies based on expiration of notification (returns number of days)
 	private function calculateCookieExpiration($n){
 		$expires = new DateTime($n['expires']);
 		$now = new DateTime();
