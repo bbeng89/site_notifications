@@ -12,6 +12,7 @@ $nh = Loader::helper('navigation');
 $fh = Loader::helper('form');
 $noty = Loader::helper('noty', 'site_notifications');
 $dth = Loader::helper('form/date_time');
+$ps = Loader::helper('form/page_selector');
 
 echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new site notification'), false, false);
 ?>
@@ -26,7 +27,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 			<div class="controls">
 				<label class="checkbox">
 					<?php echo $fh->checkbox('enabled', 'enabled', $enabled); ?>
-					<span class="help-inline"><?php echo t('Turns this notification on or off. Still obeys expiration date.') ?></span>
+					<span class="help-inline"><?php echo t('Turn this notification on or off.') ?></span>
 				</label>
 			</div>
 		</div>

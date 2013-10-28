@@ -67,12 +67,14 @@ class DashboardSiteNotificationsEditController extends Controller {
 
 	private function add($vars){
 		$db = Loader::db();
-		$db->Execute('INSERT INTO SiteNotifications (dateAdded, enabled, expires, expiresTZ, notificationText, layout, notificationType, delay, modal, closeWith, groups) VALUES(NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', $vars);
+		$db->Execute('INSERT INTO SiteNotifications (dateAdded, enabled, expires, expiresTZ, notificationText, layout, notificationType, delay, modal, closeWith, groups) 
+			VALUES(NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', $vars);
 	}
 
 	private function update($vars){
 		$db = Loader::db();
-		$db->Execute('UPDATE SiteNotifications SET enabled=?, expires=?, expiresTZ=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=?, groups=? WHERE notificationID=?', $vars);
+		$db->Execute('UPDATE SiteNotifications SET enabled=?, expires=?, expiresTZ=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=?, groups=?  
+			WHERE notificationID=?', $vars);
 	}
 
 	private function getPostVars(){
