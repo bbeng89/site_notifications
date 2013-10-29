@@ -11,10 +11,11 @@ class DashboardSiteNotificationsListController extends Controller {
 
 	public function on_start(){
 		$this->set('vth', Loader::helper('validation/token'));
+		Loader::model('notification', 'site_notifications');
 	}
 
 	public function view(){
-		Loader::model('notification', 'site_notifications');
+		
 		$this->set('notifications', Notification::getAll());
 
 		if($this->get('s') == 'a'){
@@ -32,8 +33,8 @@ class DashboardSiteNotificationsListController extends Controller {
 		$vth = Loader::helper('validation/token');
 		$s = '';
 		if($this->isPost() && $vth->validate('delete_notification')){
-			$db = Loader::db();
-			$db->Execute('DELETE FROM SiteNotifications WHERE notificationID = ?', array($id));
+			$n = Notification::getByID($id);
+			$n->delete();
 			$s = '?s=d';
 		}
 		$this->redirect('/dashboard/site_notifications/list' . $s);

@@ -6,6 +6,7 @@ class Notification{
 	public $notificationID;
 	public $enabled;
 	public $dateAdded;
+	public $lastModified;
 	public $expires;
 	public $expiresTZ;
 	public $notificationText;
@@ -44,17 +45,22 @@ class Notification{
 		
 		if(empty($this->notificationID)){
 			$query = 'INSERT INTO 
-				SiteNotifications (dateAdded, enabled, expires, expiresTZ, notificationText, layout, notificationType, delay, modal, closeWith, groups) 
-				VALUES(NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+				SiteNotifications (dateAdded, lastModified, enabled, expires, expiresTZ, notificationText, layout, notificationType, delay, modal, closeWith, groups) 
+				VALUES(NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		}
 		else{
 			$vars[] = $this->notificationID;
 			$query = 'UPDATE SiteNotifications 
-				SET enabled=?, expires=?, expiresTZ=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=?, groups=?  
+				SET lastModified=NOW(), enabled=?, expires=?, expiresTZ=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=?, groups=?  
 				WHERE notificationID=?';
 		}
 
 		$db->Execute($query, $vars);
+	}
+
+	public function delete(){
+		$db = Loader::db();
+		$db->Execute('DELETE FROM SiteNotifications WHERE notificationID = ?', array($this->notificationID));
 	}
 
 	public static function getByID($id){
@@ -65,6 +71,8 @@ class Notification{
 		$notification = new Notification();
 
 		$notification->notificationID = $id;
+		$notification->dateAdded = $n['dateAdded'];
+		$notification->lastModified = $n['lastModified'];
 		$notification->notificationText = $n['notificationText'];
 		$notification->layout = $n['layout'];
 		$notification->notificationType = $n['notificationType'];
@@ -84,10 +92,12 @@ class Notification{
 		$db = Loader::db();
 		$json = Loader::helper('json');
 		$notifications = array();
-		$notificationsArr = $db->GetAll('SELECT * FROM SiteNotifications');
+		$notificationsArr = $db->GetAll('SELECT * FROM SiteNotifications ORDER BY dateAdded DESC');
 		foreach($notificationsArr as $n){
 			$no = new Notification();
 			$no->notificationID = $n['notificationID'];
+			$no->dateAdded = $n['dateAdded'];
+			$no->lastModified = $n['lastModified'];
 			$no->notificationText = $n['notificationText'];
 			$no->layout = $n['layout'];
 			$no->notificationType = $n['notificationType'];

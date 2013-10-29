@@ -20,7 +20,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 	<table class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
-				<th><?php echo t('Added'); ?></th>
+				<th><?php echo t('Last Modified'); ?></th>
 				<th><?php echo t('Notification'); ?></th>
 				<th><?php echo t('Position'); ?></th>
 				<th><?php echo t('Type'); ?></th>
@@ -38,7 +38,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 		<?php else: ?>
 			<?php foreach($notifications as $n): ?>
 				<tr>
-					<td><?php echo date('n/j/Y g:i a', strtotime($n->dateAdded)); ?></td>
+					<td><?php echo date('n/j/Y g:i a', strtotime($n->lastModified)); ?></td>
 					<td><?php echo $th->shorten($n->notificationText, 50); ?></td>
 					<td><?php echo $layouts[$n->layout]; ?></td>
 					<td><?php echo $types[$n->notificationType]; ?></td>

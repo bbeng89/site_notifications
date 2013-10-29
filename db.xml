@@ -8,6 +8,7 @@
 	    </field>
 	    <field name="enabled" type="I1" />
 	    <field name="dateAdded" type="T" />
+	    <field name="lastModified" type="T" />
 	    <field name="expires" type="T" />
 	    <field name="expiresTZ" type="X2" />
 	    <field name="notificationText" type="X2" />

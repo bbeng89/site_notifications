@@ -31,12 +31,11 @@ class NotyHelper {
 	//The key is the text the noty javascript expects, and the value is the human readable form.
 	public function getTypes(){
 		return array(
-			'alert' => t('Alert'),
-		    'information' => t('Information'),
-		    'error' => t('Error'),
-		    'warning' => t('Warning'),
-		    'notification' => t('Notification'),
-		    'success' => t('Success')
+			'alert' => t('Alert (Gray)'),
+		    'information' => t('Information (Blue)'),
+		    'error' => t('Error (Red)'),
+		    'warning' => t('Warning (Yellow)'),
+		    'success' => t('Success (Green)')
 		);
 	}
 

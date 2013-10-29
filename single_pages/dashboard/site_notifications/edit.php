@@ -93,6 +93,21 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 				<?php endforeach;?>
 			</div>
 		</div>
+		<?php if(!empty($notification->notificationID)): ?>
+			<div class="control-group">
+				<hr/>
+				<div class="controls">
+					<p class="muted">
+						<?php echo t('Since you are updating this notification, it is possible some users have already acknowledged it. 
+						Would you like users that have already seen this notification to be notified again?') ?>
+					</p>
+					<label class="checkbox">
+						<?php echo t("Renotify Users"); ?>
+						<?php echo $fh->checkbox('renotify', 'renotify', false); ?>
+					</label>
+				</div>
+			</div>
+		<?php endif; ?>
 		<?php echo $vth->output('save_notification'); ?>
 		<?php echo $fh->hidden('notificationID', $notification->notificationID); ?>
 		

@@ -38,9 +38,19 @@ class DashboardSiteNotificationsEditController extends Controller {
 		if($this->isPost() && $vth->validate('save_notification')){
 			$notification = $this->getNotificationFromPostVars();
 			if(!$this->error->has()){
-				$nid = $this->post('notificationID');
-				$new = empty($nid);
-				$notification->save();
+				$new = empty($notification->notificationID);
+				$renotify = $this->post('renotify');
+				//If we need to renotify users, the easiest way is to clone the current notification, delete the original, then save the clone.
+				//This gives the notification a new ID so it will not be in the dismissed list of notifications in the user's cookies
+				if($renotify){
+					$newNotification = clone $notification;
+					$newNotification->notificationID = null;
+					$notification->delete();
+					$newNotification->save();
+				}
+				else{
+					$notification->save();
+				}
 				$this->redirect('/dashboard/site_notifications/list?s=' . ($new ? 'a' : 'u'));
 			}
 			else{
