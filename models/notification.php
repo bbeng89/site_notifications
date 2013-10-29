@@ -92,7 +92,7 @@ class Notification{
 		$db = Loader::db();
 		$json = Loader::helper('json');
 		$notifications = array();
-		$notificationsArr = $db->GetAll('SELECT * FROM SiteNotifications ORDER BY dateAdded DESC');
+		$notificationsArr = $db->GetAll('SELECT * FROM SiteNotifications ORDER BY lastModified DESC');
 		foreach($notificationsArr as $n){
 			$no = new Notification();
 			$no->notificationID = $n['notificationID'];
