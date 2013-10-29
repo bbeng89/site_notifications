@@ -9,91 +9,89 @@ defined('C5_EXECUTE') or die(_("Access Denied"));
 
 class DashboardSiteNotificationsEditController extends Controller {
 
+	public function on_start(){
+		$this->set('vth', Loader::helper('validation/token'));
+		$this->set('vh', Loader::helper('concrete/validation'));
+		$this->error = Loader::helper('validation/error');
+		Loader::model('notification', 'site_notifications');
+	}
+
 	public function view(){
+		$dh = Loader::helper('date');
+
 		//edit
 		if($this->get('nid')){
-			$db = Loader::db();
-			$json = Loader::helper('json');
-			$n = $db->GetRow('SELECT * FROM SiteNotifications WHERE notificationID=?', array($this->get('nid')));
-			$this->set('notificationText', $n['notificationText']);
-			$this->set('layout', $n['layout']);
-			$this->set('notificationType', $n['notificationType']);
-			$this->set('delay', $n['delay']);
-			$this->set('modal', $n['modal']);
-			$this->set('closeWith', $n['closeWith']);
-			$this->set('expires', $n['expires']);
-			$this->set('expiresTZ', $n['expiresTZ']);
-			$this->set('notificationID', $n['notificationID']);
-			$this->set('selectedGroups', $json->decode($n['groups']));
-			$this->set('enabled', $n['enabled']);
+			$notification = Notification::getByID($this->get('nid'));
 		}
 		//insert
 		else{
-			$this->set('modal', false);
-			$this->set('delay', 0);
-			$this->set('selectedGroups', array('A'));
-			$this->set('enabled', false);
-			$u = new User();
-			$utz = $u->getUserTimeZone();
-			if(defined('APP_TIMEZONE')){
-				$this->set('expiresTZ', APP_TIMEZONE);
-			}
-			else if(!empty($utz)){
-				$this->set('expiresTZ', $utz);
-			}
-			else{
-				$this->set('expiresTZ', 'America/Chicago');
-			}
+			$notification = new Notification();
 		}
-		$dh = Loader::helper('date');
+		$this->set('notification', $notification);
 		$this->set('timezones', $dh->getTimezones());
 		$this->set('groups', $this->getGroups());
 	}
 
 	public function save(){
-		if($this->isPost()){
-			$vars = $this->getPostVars();
-			$notificationID = $this->post('notificationID');
-			if(!empty($notificationID)){
-				$vars[] = $notificationID;
-				$this->update($vars);
+		$vth = Loader::helper('validation/token');
+
+		if($this->isPost() && $vth->validate('save_notification')){
+			$notification = $this->getNotificationFromPostVars();
+			if(!$this->error->has()){
+				$nid = $this->post('notificationID');
+				$new = empty($nid);
+				$notification->save();
+				$this->redirect('/dashboard/site_notifications/list?s=' . ($new ? 'a' : 'u'));
 			}
 			else{
-				$this->add($vars);
+				$this->set('error', $this->error);
+				$this->view();
 			}
-			$this->redirect('/dashboard/site_notifications/list');
+		}
+		else{
+			$this->redirect('/dashboard/site_notifications/edit');
 		}
 	}
 
-	private function add($vars){
-		$db = Loader::db();
-		$db->Execute('INSERT INTO SiteNotifications (dateAdded, enabled, expires, expiresTZ, notificationText, layout, notificationType, delay, modal, closeWith, groups) 
-			VALUES(NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', $vars);
-	}
-
-	private function update($vars){
-		$db = Loader::db();
-		$db->Execute('UPDATE SiteNotifications SET enabled=?, expires=?, expiresTZ=?, notificationText=?, layout=?, notificationType=?, delay=?, modal=?, closeWith=?, groups=?  
-			WHERE notificationID=?', $vars);
-	}
-
-	private function getPostVars(){
+	//Returns a notification object created from post variables. Also handles validation
+	private function getNotificationFromPostVars(){
 		$json = Loader::helper('json');
 		$dth = Loader::helper('form/date_time');
+		$notification = new Notification();
+
+		$notification->notificationID = $this->post('notificationID');
+
 		$tmpEnabled = $this->post('enabled');
-		$enabled = !empty($tmpEnabled) ? 1 : 0;
-		$notificationText = $this->post('notificationText');
-		$layout = $this->post('layout');
-		$notificationType = $this->post('notificationType');
+		$notification->enabled = !empty($tmpEnabled) ? 1 : 0;
+
+		$notification->notificationText = $this->post('notificationText');
+		if(empty($notification->notificationText)){
+			$this->error->add(t("Please include notification text"));
+		}
+
+		$notification->layout = $this->post('layout');
+		$notification->notificationType = $this->post('notificationType');
+
 		$delay = $this->post('delay');
-		$tmp = $this->post('modal');
-		$modal = !empty($tmp) ? 1 : 0;
-		$closeWith = $this->post('closeWith');
-		$expires = $dth->translate('expires');
-		$expiresTZ = $this->post('expiresTZ');
-		$groups = $json->encode($this->post('groups'));
+		if(!empty($delay)){
+			$notification->delay = $delay;
+		}
+
+		$modalTmp = $this->post('modal');
+		$notification->modal = !empty($modalTmp) ? 1 : 0;
+
+		$notification->closeWith = $this->post('closeWith');
+
+		$notification->expires = $dth->translate('expires');
+		$notification->expiresTZ = $this->post('expiresTZ');
+
+		$groupsTemp = $this->post('groups');
+		if(empty($groupsTemp)){
+			$this->error->add(t('Please select at least one group'));
+		}
+		$notification->groups = $json->encode($groupsTemp);
 		
-		return array($enabled, $expires, $expiresTZ, $notificationText, $layout, $notificationType, $delay, $modal, $closeWith, $groups);
+		return $notification;
 	}
 
 	//helper function - returns array of user groups

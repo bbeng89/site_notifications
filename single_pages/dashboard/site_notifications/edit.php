@@ -26,7 +26,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 			</div>
 			<div class="controls">
 				<label class="checkbox">
-					<?php echo $fh->checkbox('enabled', 'enabled', $enabled); ?>
+					<?php echo $fh->checkbox('enabled', 'enabled', $notification->enabled); ?>
 					<span class="help-inline"><?php echo t('Turn this notification on or off.') ?></span>
 				</label>
 			</div>
@@ -34,25 +34,25 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 		<div class="control-group">
 			<label class="control-label" for="notificationText"><?php echo t("Notification Text"); ?></label>
 			<div class="controls">
-				<?php echo $fh->textarea("notificationText", $notificationText, array("class" => "span8", "rows" => "2")); ?>
+				<?php echo $fh->textarea("notificationText", $notification->notificationText, array("class" => "span8", "rows" => "2")); ?>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" for="layout"><?php echo t("Position"); ?></label>
 			<div class="controls">
-				<?php echo $fh->select('layout', $noty->getLayouts(), $layout, array("class" => "span4")); ?>
+				<?php echo $fh->select('layout', $noty->getLayouts(), $notification->layout, array("class" => "span4")); ?>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" for="notificationType"><?php echo t("Type"); ?></label>
 			<div class="controls">
-				<?php echo $fh->select('notificationType', $noty->getTypes(), $notificationType, array("class" => "span4")); ?>
+				<?php echo $fh->select('notificationType', $noty->getTypes(), $notification->notificationType, array("class" => "span4")); ?>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" for="delay"><?php echo t("Delay (milliseconds)"); ?></label>
 			<div class="controls">
-				<?php echo $fh->text('delay', $delay, array("class" => "span1")); ?>
+				<?php echo $fh->text('delay', $notification->delay, array("class" => "span1")); ?>
 				<span class="help-inline"><?php echo t('The amount of time to show the notification before it disappears. Set to 0 for always visible.') ?></span>
 			</div>
 		</div>
@@ -62,7 +62,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 			</div>
 			<div class="controls">
 				<label class="checkbox">
-					<?php echo $fh->checkbox('modal', 'modal', $modal); ?>
+					<?php echo $fh->checkbox('modal', 'modal', $notification->modal); ?>
 					<span class="help-inline"><?php echo t('Display the notification in a modal (forces user to acknowledge)') ?></span>
 				</label>
 			</div>
@@ -70,30 +70,31 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('Add New Notification'), t('Add a new
 		<div class="control-group">
 			<label class="control-label" for="closeWith"><?php echo t("Close With"); ?></label>
 			<div class="controls">
-				<?php echo $fh->select('closeWith', $noty->getCloseWithOptions(), $closeWith, array("class" => "span4")); ?>
+				<?php echo $fh->select('closeWith', $noty->getCloseWithOptions(), $notification->closeWith, array("class" => "span4")); ?>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" for="expires"><?php echo t("Expires"); ?></label>
 			<div class="controls">
-				<?php echo $dth->datetime('expires', $expires, false, true); ?>
+				<?php echo $dth->datetime('expires', $notification->expires, false, true); ?>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" for="expires"><?php echo t("Expires Timezone"); ?></label>
 			<div class="controls">
-				<?php echo $fh->select('expiresTZ', $timezones, $expiresTZ, array("class" => "span4")); ?>
+				<?php echo $fh->select('expiresTZ', $timezones, $notification->expiresTZ, array("class" => "span4")); ?>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label"><?php echo t("Show To"); ?></label>
 			<div class="controls">
 				<?php foreach($groups as $gid => $name): ?>
-					<p><?php echo $fh->checkbox('groups[]', $gid, in_array($gid, $selectedGroups), null) . ' ' . $name; ?></p>
+					<p><?php echo $fh->checkbox('groups[]', $gid, in_array($gid, $notification->selectedGroups), null) . ' ' . $name; ?></p>
 				<?php endforeach;?>
 			</div>
 		</div>
-		<?php echo $fh->hidden('notificationID', $notificationID); ?>
+		<?php echo $vth->output('save_notification'); ?>
+		<?php echo $fh->hidden('notificationID', $notification->notificationID); ?>
 		
 	</div>
 	<div class="ccm-pane-footer">

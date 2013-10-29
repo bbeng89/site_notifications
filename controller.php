@@ -22,7 +22,7 @@ class SiteNotificationsPackage extends Package {
 	}
 
 	public function on_start() {
-        Events::extend("on_before_render", "Notification", "addNotifications", DIRNAME_PACKAGES.'/'.$this->pkgHandle.'/models/notification.php');
+        Events::extend("on_before_render", "NotyNotifications", "addNotifications", DIRNAME_PACKAGES.'/'.$this->pkgHandle.'/libraries/noty_notifications.php');
     }
 
 	public function install($post = array()){

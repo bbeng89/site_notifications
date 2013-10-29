@@ -9,17 +9,33 @@ defined('C5_EXECUTE') or die(_("Access Denied"));
 
 class DashboardSiteNotificationsListController extends Controller {
 
+	public function on_start(){
+		$this->set('vth', Loader::helper('validation/token'));
+	}
+
 	public function view(){
-		$db = Loader::db();
-		$notifications = $db->GetAll('SELECT * FROM SiteNotifications');
-		$this->set('notifications', $notifications);
+		Loader::model('notification', 'site_notifications');
+		$this->set('notifications', Notification::getAll());
+
+		if($this->get('s') == 'a'){
+			$this->set('message', t('New notification added'));
+		}
+		else if($this->get('s') == 'u'){
+			$this->set('message', t('Notification updated'));
+		}
+		else if($this->get('s') == 'd'){
+			$this->set('message', t('Notification deleted'));
+		}
 	}
 
 	public function delete($id){
-		if($this->isPost()){
+		$vth = Loader::helper('validation/token');
+		$s = '';
+		if($this->isPost() && $vth->validate('delete_notification')){
 			$db = Loader::db();
 			$db->Execute('DELETE FROM SiteNotifications WHERE notificationID = ?', array($id));
+			$s = '?s=d';
 		}
-		$this->redirect('/dashboard/site_notifications/list');
+		$this->redirect('/dashboard/site_notifications/list' . $s);
 	}
 }
