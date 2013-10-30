@@ -14,7 +14,7 @@ class SiteNotificationsPackage extends Package {
 	protected $pkgVersion = '0.9.0';
 
 	public function getPackageDescription(){
-		return t('Add notification alerts to your website.');
+		return t('Add notifications and alerts to your website.');
 	}
 
 	public function getPackageName(){
@@ -28,6 +28,7 @@ class SiteNotificationsPackage extends Package {
 	public function install($post = array()){
 		$pkg = parent::install();
 		$this->installSinglePages($pkg);
+		$this->installJobs($pkg);
 	}
 
 	public function uninstall(){
@@ -86,6 +87,15 @@ class SiteNotificationsPackage extends Package {
 		$dashboardIcons[$path] = "icon-plus";
 
 		$this->setupDashboardIcons($dashboardIcons);
+	}
+
+	public function installJobs($pkg){
+		Loader::model('job');
+
+		$clearExpired = Job::getByHandle('clear_expired_notifications');
+		if(!is_object($clearExpired)){
+			Job::installByPackage('clear_expired_notifications', $pkg);
+		}
 	}
 
 	private function setupDashboardIcons($iconArray) {

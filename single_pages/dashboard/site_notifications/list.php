@@ -9,7 +9,7 @@ defined('C5_EXECUTE') or die(_("Access Denied"));
  
 $dbh = Loader::helper('concrete/dashboard');
 $noty = Loader::helper('noty', 'site_notifications');
-$th = Loader::helper('text');
+$cth = Loader::helper('custom_text', 'site_notifications');
 $layouts = $noty->getLayouts();
 $types = $noty->getTypes();
 
@@ -39,7 +39,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 			<?php foreach($notifications as $n): ?>
 				<tr>
 					<td><?php echo date('n/j/Y g:i a', strtotime($n->lastModified)); ?></td>
-					<td><?php echo $th->shorten($n->notificationText, 50); ?></td>
+					<td><?php echo $cth->shorten($n->notificationText, 50); ?></td>
 					<td><?php echo $layouts[$n->layout]; ?></td>
 					<td><?php echo $types[$n->notificationType]; ?></td>
 					<td><?php echo $n->enabled ? t('Yes') : t('No'); ?></td>
@@ -57,7 +57,7 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 		</tbody>
 	</table>
 	<div class="clearfix">
-		<p class="pull-left"><?php echo count($notifications) . ' ' . (count($notifications) == 1 ? t('Notification') : t('Notifications')); ?></p>
+		<p class="pull-left"><?php echo count($notifications) . ' ' . $cth->pluralize(count($notifications), t('Notification'), t('Notifications')); ?></p>
 		<a href="<?php echo $this->url('/dashboard/site_notifications/edit'); ?>" class="pull-right btn btn-primary"><?php echo t('Add New Notification'); ?></a>
 	</div>
 </div>
