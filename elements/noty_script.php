@@ -23,7 +23,7 @@ $counter = 1;
 			afterClose: function(){
 				var nid = <?php echo $options->notificationID;?>;
 				cookie.push(nid);
-				$.cookie('dismissed_site_notifications', JSON.stringify(cookie), { path: '/', expires: <?php echo $expirations[$options->notificationID];?> });
+				$.cookie('dismissed_site_notifications', JSON.stringify(cookie), { path: '/', expires: <?php echo $expiration;?> });
 			}
 		}
 		var noty<?php echo $counter;?> = noty(options);

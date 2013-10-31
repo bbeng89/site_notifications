@@ -63,6 +63,11 @@ class Notification{
 		$db->Execute('DELETE FROM SiteNotifications WHERE notificationID = ?', array($this->notificationID));
 	}
 
+	public function getExpiresObj(){
+		$dtz = new DateTimeZone($this->expiresTZ);
+		return new DateTime($this->expires, $dtz);
+	}
+
 	public static function getByID($id){
 		$db = Loader::db();
 		$json = Loader::helper('json');
@@ -82,6 +87,7 @@ class Notification{
 		$notification->expires = $n['expires'];
 		$notification->expiresTZ = $n['expiresTZ'];
 		$notification->notificationID = $n['notificationID'];
+		$notification->groups = $n['groups'];
 		$notification->selectedGroups = $json->decode($n['groups']);
 		$notification->enabled = $n['enabled'];
 
@@ -107,6 +113,7 @@ class Notification{
 			$no->expires = $n['expires'];
 			$no->expiresTZ = $n['expiresTZ'];
 			$no->notificationID = $n['notificationID'];
+			$no->groups = $n['groups'];
 			$no->selectedGroups = $json->decode($n['groups']);
 			$no->enabled = $n['enabled'];
 			$notifications[] = $no;

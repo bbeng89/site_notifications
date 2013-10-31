@@ -1,1 +1,4 @@
+0.9.1 - Fixed an issue with cookie expiration dates. Now it is set based on the latest expiration date
+	  - Refactored NotyNotification code to use Notification Model
+
 0.9.0 - Initial PRB Release
