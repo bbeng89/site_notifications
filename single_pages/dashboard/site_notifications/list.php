@@ -38,12 +38,12 @@ echo $dbh->getDashboardPaneHeaderWrapper(t('All Notifications'), t('List of all 
 		<?php else: ?>
 			<?php foreach($notifications as $n): ?>
 				<tr>
-					<td><?php echo date('n/j/Y g:i a', strtotime($n->lastModified)); ?></td>
+					<td><?php echo date(DATE_APP_GENERIC_MDYT, strtotime($n->lastModified)); ?></td>
 					<td><?php echo $cth->shorten($n->notificationText, 50); ?></td>
 					<td><?php echo $layouts[$n->layout]; ?></td>
 					<td><?php echo $types[$n->notificationType]; ?></td>
 					<td><?php echo $n->enabled ? t('Yes') : t('No'); ?></td>
-					<td><?php echo date('n/j/Y g:i a', strtotime($n->expires)); ?></td>
+					<td><?php echo date(DATE_APP_GENERIC_MDYT, strtotime($n->expires)); ?></td>
 					<td><a href="<?php echo $this->url('/dashboard/site_notifications/edit?nid='. $n->notificationID); ?>" class="btn"><?php echo t('Edit'); ?></td>
 					<td>
 						<form action="<?php echo $this->action('delete', $n->notificationID); ?>" method="POST" class="deleteForm" style="margin:0;">

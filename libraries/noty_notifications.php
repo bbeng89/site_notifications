@@ -21,9 +21,6 @@ class NotyNotifications {
 			$dismissed = !empty($_COOKIE['dismissed_site_notifications']) ? $json->decode($_COOKIE['dismissed_site_notifications']) : array();
 			$u = new User();
 
-			//load the noty js first
-			$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/jquery.noty.js', 'site_notifications'));
-
 			//create options objects for each notification
 			foreach($notifications as $n){
 
@@ -50,24 +47,30 @@ class NotyNotifications {
 				}
 			}
 
-			$expiration = NotyNotifications::calculateCookieExpiration($notifications);
-			
-			//load the correct js layout file for each layout
-			foreach($nLayouts as $layout){
-				$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/layouts/' . $layout . '.js', 'site_notifications'));
+			//only load the scripts if there are visible notifications
+			if(count($nOptions) > 0){
+				$expiration = NotyNotifications::calculateCookieExpiration($notifications);
+
+				//load the noty js first
+				$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/jquery.noty.js', 'site_notifications'));
+				
+				//load the correct js layout file for each layout
+				foreach($nLayouts as $layout){
+					$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/layouts/' . $layout . '.js', 'site_notifications'));
+				}
+
+				//load the theme js
+				$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/themes/default.js', 'site_notifications'));
+
+				//get the content of the noty_script element
+				ob_start();
+				Loader::packageElement('noty_script', 'site_notifications', array('optionObjs' => $nOptions, 'expiration' => $expiration));
+				$script = ob_get_contents();
+				ob_end_clean();
+
+				$v->addFooterItem($html->javascript('jquery-cookie/jquery.cookie.js', 'site_notifications'));
+				$v->addFooterItem($script);
 			}
-
-			//load the theme js
-			$v->addFooterItem($html->javascript('noty-2.1.0/js/noty/themes/default.js', 'site_notifications'));
-
-			//get the content of the noty_script element
-			ob_start();
-			Loader::packageElement('noty_script', 'site_notifications', array('optionObjs' => $nOptions, 'expiration' => $expiration));
-			$script = ob_get_contents();
-			ob_end_clean();
-
-			$v->addFooterItem($html->javascript('jquery-cookie/jquery.cookie.js', 'site_notifications'));
-			$v->addFooterItem($script);
 		}
 	}
 

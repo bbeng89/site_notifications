@@ -18,7 +18,7 @@ $counter = 1;
 	}
 
 	<?php foreach($optionObjs as $options): ?>
-		var options = $.parseJSON('<?php echo $json->encode($options);?>');
+		var options = <?php echo $json->encode($options);?>;
 		options.callback = {
 			afterClose: function(){
 				var nid = <?php echo $options->notificationID;?>;

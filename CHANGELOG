@@ -1,3 +1,9 @@
+0.9.3 - Optimized addNotifications() method - don't load scripts if there are no visible notifications
+	  - Removed unnecessary $.parseJSON from noty_script.php element
+
+0.9.2 - Changed date displays on notification list page to use DATE_APP_GENERIC_MDYT rather than hard-coding format string
+	  - Made db.xml fields appropriate sizes
+
 0.9.1 - Fixed an issue with cookie expiration dates. Now it is set based on the latest expiration date
 	  - Refactored NotyNotification code to use Notification Model
 
