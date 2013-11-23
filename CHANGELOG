@@ -1,3 +1,5 @@
+1.0.0 - Initial Marketplace Release
+
 0.9.3 - Optimized addNotifications() method - don't load scripts if there are no visible notifications
 	  - Removed unnecessary $.parseJSON from noty_script.php element
 

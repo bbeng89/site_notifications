@@ -11,7 +11,7 @@ class SiteNotificationsPackage extends Package {
 
 	protected $pkgHandle = 'site_notifications';
 	protected $appVersionRequired = '5.6.0';
-	protected $pkgVersion = '0.9.3';
+	protected $pkgVersion = '1.0.0';
 
 	public function getPackageDescription(){
 		return t('Add notifications and alerts to your website.');
