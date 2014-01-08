@@ -26,9 +26,17 @@ class SiteNotificationsPackage extends Package {
     }
 
 	public function install($post = array()){
-		$pkg = parent::install();
-		$this->installSinglePages($pkg);
-		$this->installJobs($pkg);
+
+		$required_php = '5.3.0';
+
+		if(version_compare(PHP_VERSION, $required_php) < 0){
+			throw new Exception(t('You are running PHP %s. This add-on requires PHP %s or greater.', PHP_VERSION, $required_php));
+		}
+		else{
+			$pkg = parent::install();
+			$this->installSinglePages($pkg);
+			$this->installJobs($pkg);
+		}
 	}
 
 	public function uninstall(){
